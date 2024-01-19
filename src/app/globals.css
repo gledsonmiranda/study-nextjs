@@ -25,3 +25,21 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+@layer utilities {
+  .tic-tac-toe-winner {
+    @apply after:w-full after:bg-white after:h-1 after:absolute;
+  }
+
+  .tic-tac-toe-vertical {
+    @apply after:rotate-90
+  }
+
+  .tic-tac-toe-diagonal-1 {
+    @apply after:rotate-45 after:w-[150%]
+  }
+
+  .tic-tac-toe-diagonal-2 {
+    @apply after:-rotate-45 after:w-[150%]
+  }
+}
