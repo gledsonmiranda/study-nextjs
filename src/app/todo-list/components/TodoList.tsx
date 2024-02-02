@@ -1,10 +1,9 @@
-import TodoListItem from "./TodoListItem";
+import TodoListItem from './TodoListItem';
 
-interface ITodo {
+export interface ITodo {
   id: number;
   todo: string;
   completed: boolean;
-  userId: number;
 }
 
 const getTodos = async () => {
@@ -16,13 +15,11 @@ const getTodos = async () => {
 export default async function TodoList() {
   const { todos } = await getTodos();
 
-  console.log(todos)
-
   return (
     <div className="mt-4">
       <ul>
         {todos.map((item: ITodo) => {
-          return <TodoListItem key={item.id} item={item} />
+          return <TodoListItem key={item.id} item={item} />;
         })}
       </ul>
     </div>

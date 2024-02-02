@@ -4,16 +4,16 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface IAddTodo {
-  name: string;
+  todo: string;
   refresh: () => void;
 }
 
-const addTodo = async (item: IAddTodo) => {
+const addTodo = async ({ todo, refresh }: IAddTodo) => {
   await fetch('https://dummyjson.com/todos/add', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      todo: item.name,
+      todo: todo,
       completed: true,
       userId: 5,
     }),
@@ -21,27 +21,27 @@ const addTodo = async (item: IAddTodo) => {
     .then((result) => result.json())
     .then((data) => {
       console.log(data);
-      item.refresh();
+      refresh();
     });
 };
 
 export default function AddNewTodo() {
   const router = useRouter();
-  const [name, setName] = useState('');
+  const [todoText, setTodoText] = useState('');
 
   return (
     <div className="mt-4">
       <input
         type="text"
-        className="text-gray-700 p-1"
-        onChange={(e) => setName(e.target.value)}
-        value={name}
+        className="text-gray-800 py-1 px-2 rounded-sm text-sm"
+        onChange={(e) => setTodoText(e.target.value)}
+        value={todoText}
       />
       <button
-        className="ml-2 p-2 rounded bg-slate-600"
+        className="ml-2 py-1 px-2 rounded bg-green-300 text-gray-800 text-sm"
         onClick={async () => {
-          await addTodo({ name, refresh: router.refresh });
-          setName('');
+          await addTodo({ todo: todoText, refresh: router.refresh });
+          setTodoText('');
         }}
       >
         Add

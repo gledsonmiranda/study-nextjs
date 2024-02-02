@@ -1,13 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-
-interface ITodo {
-  id: number;
-  todo: string;
-  completed: boolean;
-  userId: number;
-}
+import { ITodo } from './TodoList';
 
 interface Props {
   item: ITodo;
@@ -15,58 +9,59 @@ interface Props {
 
 interface UpdateTodo {
   id: number;
-  status?: boolean;
+  completed?: boolean;
   refresh?: () => void;
 }
 
-const update = async (item: UpdateTodo) => {
-  await fetch(`https://dummyjson.com/todos/${item.id}`, {
+const update = async ({ id, completed, refresh }: UpdateTodo) => {
+  await fetch(`https://dummyjson.com/todos/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ completed: item.status }),
+    body: JSON.stringify({ completed }),
   })
     .then((result) => result.json())
     .then((data) => {
       console.log(data);
-      if (!item.refresh) return;
+      if (!refresh) return;
 
-      item?.refresh();
+      refresh();
     });
 };
 
-const deleteTodo = async (item: UpdateTodo) => {
-  await fetch(`https://dummyjson.com/todos/${item.id}`, {
+const deleteTodo = async ({ id, refresh }: UpdateTodo) => {
+  await fetch(`https://dummyjson.com/todos/${id}`, {
     method: 'DELETE',
   })
     .then((result) => result.json())
     .then((data) => {
       console.log(data);
-      if (!item.refresh) return;
+      if (!refresh) return;
 
-      item.refresh();
+      refresh();
     });
 };
 export default function TodoListItem({ item }: Props) {
   const router = useRouter();
+  const { id, todo, completed } = item;
 
   return (
-    <li className="text-sm mt-2">
+    <li className="mt-2">
       <input
         type="checkbox"
-        className="mr-2"
+        className="cursor-pointer"
         onChange={(e) =>
           update({
-            id: item.id,
-            status: e.target.checked,
+            id: id,
+            completed: e.target.checked,
             refresh: router.refresh,
           })
         }
-        checked={item.completed}
+        checked={completed}
       />
-      {item.todo}
+      <span className="text-sm ml-2">{todo}</span>
       <button
-        className="ml-2 p-2 rounded bg-slate-600"
-        onClick={() => deleteTodo({ id: item.id, refresh: router.refresh })}
+        className="ml-2 py-1 px-2 rounded bg-red-300 text-gray-800 text-sm"
+        onClick={() => deleteTodo({ id, refresh: router.refresh })}
       >
         Delete
       </button>
